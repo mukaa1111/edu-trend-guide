@@ -3,3 +3,4 @@ Thumbs.db
 desktop.ini
 *.tmp
 .claude/settings.local.json
+.bkit/
