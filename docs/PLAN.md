@@ -30,8 +30,8 @@
 
 ## 5단계. 인터넷에 올리기
 - [x] GitHub 계정 (mukaa1111, 이미 있음)
-- [ ] 저장소 `edu-trend-guide` 만들고 파일 올리기, GitHub Pages 켜기 → https://mukaa1111.github.io/edu-trend-guide/
-- [ ] 핸드폰에서 주소 열어보기, 가족에게 링크 보내기
+- [x] 저장소 `edu-trend-guide` 만들고 파일 올리기, GitHub Pages 켜기 → https://mukaa1111.github.io/edu-trend-guide/
+- [ ] 핸드폰에서 주소 열어보기, 가족에게 링크 보내기 (내용 채운 뒤에)
 
 ## 6단계. 운영
 - [ ] "이 내용 추가해줘" 식으로 항목 추가해보고 반영되는지 확인

@@ -3,7 +3,7 @@
 둔산(1순위)·대치·목동의 초등 교육 트렌드, 대회, 학원, 학습지, 경험활동 정보를 학년·과목·종류별로 모아 보는 가족용 페이지예요.
 
 ## 여는 법
-- **폰이나 어디서든**: https://mukaa1111.github.io/edu-trend-guide/ (GitHub Pages 켠 뒤부터)
+- **폰이나 어디서든**: https://mukaa1111.github.io/edu-trend-guide/
 - **PC에서 파일로**: 이 폴더의 `index.html`을 더블클릭해도 같은 화면이 떠요.
 - 파일을 고친 뒤 폰 주소에도 반영하려면 "GitHub에 올려줘"라고 말하면 돼요.
 
