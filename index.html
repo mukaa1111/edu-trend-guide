@@ -4,168 +4,397 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>우리 아이 교육 정보</title>
-<meta name="description" content="둔산·대치·목동 초등 교육 트렌드, 대회, 학원, 학습지, 경험활동 정보를 학년·과목·종류별로 모아둔 가족용 페이지">
+<meta name="description" content="둔산 중심 초등 교육 정보: 학원, 대회, 교재, 영재원, 지역인재, 트렌드를 주제별·학년별로 모아둔 가족용 페이지">
 <style>
   :root{
-    --bg:#f6f4ef; --card:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e5e1d8;
-    --accent:#2f6f5e; --accent-ink:#ffffff; --chip:#eceae3; --chip-on:#2f6f5e;
-    --warn:#b45309; --warn-bg:#fff4e5;
+    --bg:#f5f3ee; --card:#ffffff; --ink:#1d2126; --muted:#68707a; --line:#e3dfd5;
+    --accent:#2a6857; --accent-soft:#e4efeb; --accent-ink:#ffffff; --chip:#ebe8e0;
+    --warn:#b45309; --warn-bg:#fdf0dc; --ok:#2a6857; --mid:#8a929c; --due:#b3261e; --due-bg:#fbe9e7;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#15171a; --card:#1f2327; --ink:#e8e6e1; --muted:#9aa3ad; --line:#2d3237;
-      --accent:#6fb59f; --accent-ink:#0f1512; --chip:#2a2f34; --chip-on:#6fb59f;
-      --warn:#f5b041; --warn-bg:#3a2a12;
+      --bg:#131518; --card:#1d2125; --ink:#e9e6e0; --muted:#9aa3ad; --line:#2c3136;
+      --accent:#74bba5; --accent-soft:#1f3530; --accent-ink:#0e1512; --chip:#292e33;
+      --warn:#f0ad4e; --warn-bg:#3a2a12; --ok:#74bba5; --mid:#7b838c; --due:#ff8a80; --due-bg:#3b1d1b;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#15171a; --card:#1f2327; --ink:#e8e6e1; --muted:#9aa3ad; --line:#2d3237;
-    --accent:#6fb59f; --accent-ink:#0f1512; --chip:#2a2f34; --chip-on:#6fb59f;
-    --warn:#f5b041; --warn-bg:#3a2a12;
+    --bg:#131518; --card:#1d2125; --ink:#e9e6e0; --muted:#9aa3ad; --line:#2c3136;
+    --accent:#74bba5; --accent-soft:#1f3530; --accent-ink:#0e1512; --chip:#292e33;
+    --warn:#f0ad4e; --warn-bg:#3a2a12; --ok:#74bba5; --mid:#7b838c; --due:#ff8a80; --due-bg:#3b1d1b;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
-  header{padding:20px 16px 8px;max-width:860px;margin:0 auto}
-  h1{font-size:22px;margin:0 0 4px}
-  .sub{color:var(--muted);font-size:13px;margin:0}
-  main{max-width:860px;margin:0 auto;padding:0 16px 60px}
-  .tabs{display:flex;gap:6px;margin:14px 0 10px;border-bottom:1px solid var(--line)}
-  .tabs button{background:none;border:0;padding:8px 12px;font-size:15px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
-  .tabs button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
-  .search{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:15px;margin:6px 0 10px}
-  .filters{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-  .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-  .row .lab{font-size:12px;color:var(--muted);width:34px;flex:none}
-  .chip{border:0;background:var(--chip);color:var(--ink);padding:5px 11px;border-radius:999px;font-size:13px;cursor:pointer}
-  .chip.on{background:var(--chip-on);color:var(--accent-ink);font-weight:600}
-  .count{font-size:13px;color:var(--muted);margin:4px 0 10px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;margin-bottom:10px}
-  .card h3{margin:0 0 6px;font-size:16px;line-height:1.35}
-  .card p{margin:0 0 8px;font-size:14px}
-  .tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
-  .tag{font-size:12px;background:var(--chip);padding:2px 8px;border-radius:6px;color:var(--ink)}
-  .tag.region{background:var(--accent);color:var(--accent-ink)}
-  .meta{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 12px}
-  .meta a{color:var(--accent)}
-  .trust-low{color:var(--warn);background:var(--warn-bg);padding:1px 6px;border-radius:4px}
-  .note{font-size:13px;color:var(--muted);margin-top:6px}
-  .group{margin:18px 0 8px;font-size:15px;font-weight:700;border-left:4px solid var(--accent);padding-left:8px}
-  .empty{color:var(--muted);text-align:center;padding:40px 0}
-  footer{max-width:860px;margin:0 auto;padding:0 16px 30px;font-size:12px;color:var(--muted)}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;word-break:keep-all;overflow-wrap:anywhere}
+  button{font:inherit;color:inherit;cursor:pointer}
+  .wrap{max-width:920px;margin:0 auto;padding:0 16px}
+
+  /* 상단 고정: 제목 + 검색 + 탭 */
+  .top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+  .top .wrap{padding-top:10px}
+  .brand{display:flex;align-items:baseline;gap:8px;justify-content:space-between}
+  .brand h1{font-size:18px;margin:0;letter-spacing:-.01em}
+  .brand span{font-size:12px;color:var(--muted);white-space:nowrap}
+  .search{position:relative;margin:8px 0 0}
+  .search input{width:100%;padding:11px 38px 11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-size:16px}
+  .search input:focus{outline:2px solid var(--accent);outline-offset:1px}
+  .search button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--muted);font-size:18px;padding:4px 8px;display:none}
+  .tabs{display:flex;gap:2px;margin-top:6px}
+  .tabs button{flex:1;background:none;border:0;padding:10px 4px 9px;font-size:15px;color:var(--muted);border-bottom:3px solid transparent}
+  .tabs button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
+
+  main{padding-top:16px;padding-bottom:70px}
+  h2{font-size:15px;margin:22px 0 10px;color:var(--muted);font-weight:700;letter-spacing:.01em}
+  h2:first-child{margin-top:0}
+
+  /* 홈: 주제 카드 */
+  .topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+  @media (max-width:520px){.topics{grid-template-columns:1fr 1fr;gap:8px}}
+  .topic{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 13px 11px;display:flex;flex-direction:column;gap:3px;min-height:86px}
+  .topic:hover{border-color:var(--accent)}
+  .topic b{font-size:15px;line-height:1.3}
+  .topic small{font-size:12px;color:var(--muted);line-height:1.35}
+  .topic i{font-style:normal;font-size:12px;color:var(--accent);font-weight:700;margin-top:auto}
+  .topic.hot{background:var(--due-bg);border-color:transparent}
+  .topic.hot i{color:var(--due)}
+
+  /* 결과 화면 머리 */
+  .head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .back{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13px}
+  .head h3{margin:0;font-size:19px;flex:1;min-width:140px}
+  .head .n{font-size:13px;color:var(--muted)}
+  .bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .pill{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13px}
+  .pill.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+  .pill.x::after{content:" ×";opacity:.8}
+  select.pill{appearance:none;-webkit-appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 14px) 55%,calc(100% - 9px) 55%;background-size:5px 5px;background-repeat:no-repeat;color:var(--ink)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px;display:none}
+  .panel.open{display:block}
+  .frow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+  .frow:last-child{margin-bottom:0}
+  .frow span{font-size:12px;color:var(--muted);width:36px;flex:none}
+  .chip{border:0;background:var(--chip);padding:6px 11px;border-radius:999px;font-size:13px}
+  .chip.on{background:var(--accent);color:var(--accent-ink);font-weight:600}
+
+  /* 항목: 접힌 줄 → 누르면 펼침 */
+  .sec{font-size:13px;font-weight:700;color:var(--accent);margin:18px 0 6px;display:flex;gap:6px;align-items:baseline}
+  .sec small{color:var(--muted);font-weight:400}
+  .list{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  details.it{border-top:1px solid var(--line)}
+  details.it:first-child{border-top:0}
+  details.it>summary{list-style:none;cursor:pointer;padding:12px 44px 11px 14px;position:relative}
+  details.it>summary::-webkit-details-marker{display:none}
+  details.it>summary:hover{background:var(--accent-soft)}
+  details.it[open]>summary{background:var(--accent-soft)}
+  .t{font-size:15px;font-weight:600;line-height:1.4}
+  .m{font-size:12.5px;color:var(--muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:2px 6px;align-items:center}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--mid)}
+  .dot.hi{background:var(--ok)} .dot.lo{background:var(--warn)}
+  .dd{background:var(--due-bg);color:var(--due);font-weight:700;border-radius:6px;padding:0 6px;font-size:12px}
+  .dd.past{background:var(--chip);color:var(--muted);font-weight:400}
+  .rg{background:var(--chip);border-radius:6px;padding:0 6px;color:var(--ink)}
+  .fav{position:absolute;right:6px;top:8px;border:0;background:none;font-size:20px;line-height:1;padding:6px 8px;color:var(--mid)}
+  .fav.on{color:#d9a400}
+  .body{padding:2px 14px 14px;font-size:14.5px}
+  .body p{margin:8px 0 0}
+  .body .note{color:var(--muted);font-size:13.5px;border-left:3px solid var(--line);padding-left:9px}
+  .foot{margin-top:10px;font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:3px 12px}
+  .foot a{color:var(--accent);font-weight:600}
+  .lo-txt{color:var(--warn);background:var(--warn-bg);border-radius:5px;padding:0 6px}
+  .more{display:block;width:100%;margin-top:10px;padding:12px;border:1px solid var(--line);background:var(--card);border-radius:12px;font-size:14px}
+  .empty{color:var(--muted);text-align:center;padding:44px 0}
+  .hint{font-size:12.5px;color:var(--muted);margin:10px 2px 0}
+
+  /* 학년별 */
+  .grades{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+  .legend{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;margin:12px 2px 0}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  footer{font-size:12px;color:var(--muted);padding-bottom:30px}
 </style>
 </head>
 <body>
-<header>
-  <h1>우리 아이 교육 정보</h1>
-  <p class="sub">둔산 중심 · 대치/목동/과천/잠실 참고 · 초2~초6 · 마지막 갱신 <span id="updated"></span></p>
-</header>
-<main>
-  <div class="tabs">
-    <button class="on" data-tab="list">찾아보기</button>
-    <button data-tab="roadmap">시기별 로드맵</button>
+<div class="top"><div class="wrap">
+  <div class="brand"><h1>우리 아이 교육 정보</h1><span id="updated"></span></div>
+  <div class="search">
+    <input id="q" type="search" placeholder="검색: 황소, 웩슬러, 지역인재, 경시대회 …" autocomplete="off">
+    <button id="qx" aria-label="검색어 지우기">×</button>
   </div>
-  <input class="search" id="q" type="search" placeholder="검색: 경시대회, 원서, 레벨테스트 …">
-  <div class="filters">
-    <div class="row" data-key="region"><span class="lab">지역</span></div>
-    <div class="row" data-key="grade"><span class="lab">학년</span></div>
-    <div class="row" data-key="subject"><span class="lab">과목</span></div>
-    <div class="row" data-key="type"><span class="lab">종류</span></div>
+  <div class="tabs" role="tablist">
+    <button data-view="home">주제별</button>
+    <button data-view="grade">학년별</button>
+    <button data-view="fav">찜 <span id="favn"></span></button>
   </div>
-  <div class="count" id="count"></div>
-  <div id="out"></div>
-</main>
-<footer>정보는 수집 시점 기준이며 틀릴 수 있어요. "확인 필요" 표시는 공식 자료로 확인하지 못한 내용입니다. 추가·수정은 Claude에게 "이 내용 추가해줘"라고 말하면 돼요.</footer>
+</div></div>
+
+<main class="wrap"><div id="out"></div></main>
+<footer class="wrap">정보는 수집 시점 기준이며 틀릴 수 있어요. 주황색 "확인 필요"는 공식 자료로 확인하지 못한 내용입니다. 추가·수정은 Claude에게 "이 내용 추가해줘"라고 말하면 돼요.</footer>
 
 <script src="data/items.js"></script>
 <script>
 (function(){
   var ITEMS = window.ITEMS || [];
-  document.getElementById('updated').textContent = window.LAST_UPDATED || '';
+  var $ = function(id){ return document.getElementById(id); };
+  var out = $('out');
+  $('updated').textContent = (window.LAST_UPDATED||'') + ' 갱신 · ' + ITEMS.length + '건';
 
+  // ── 도우미 ──
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  var TODAY = new Date(); TODAY.setHours(0,0,0,0);
+  function dday(it){ // 마감까지 남은 날 (지났으면 음수, 없으면 null)
+    if (!it.deadline) return null;
+    var p = it.deadline.split('-'); var d = new Date(+p[0], +p[1]-1, +p[2]);
+    return Math.round((d - TODAY) / 86400000);
+  }
+  function idIs(it, re){ return re.test(it.id); }
+  var TRUST_RANK = {'높음':0,'보통':1,'확인 필요':2};
+  var TYPE_ORDER = ['로드맵','트렌드','학원','학습지','대회','경험'];
+  var TYPE_LABEL = {'로드맵':'알아둘 흐름·제도','트렌드':'요즘 흐름·상위권','학원':'학원·설명회','학습지':'교재·앱','대회':'대회·시험','경험':'체험·활동'};
+
+  // ── 주제 (홈 화면 바로가기). 한 항목이 여러 주제에 들어갈 수 있음 ──
+  var TOPICS = [
+    {k:'due',   name:'곧 마감·개강', desc:'30일 안에 접수 마감, 설명회, 개강', hot:true,
+      f:function(it){ var d=dday(it); return d!==null && d>=0 && d<=30; }},
+    {k:'dunsan',name:'둔산 학원', desc:'수학·영어 학원, 레벨테스트, 설명회',
+      f:function(it){ return it.region==='둔산' && it.type==='학원'; }},
+    {k:'math',  name:'수학 로드맵·교재', desc:'연산→심화 단계, 선행 속도',
+      f:function(it){ return it.subject==='수학' && (it.type==='로드맵'||it.type==='학습지'||it.type==='트렌드'); }},
+    {k:'mathc', name:'수학 대회', desc:'HME, KMA, KMC, 성대경시 …',
+      f:function(it){ return it.subject==='수학' && it.type==='대회'; }},
+    {k:'eng',   name:'영어 로드맵·교재', desc:'원서 단계, 파닉스→문법 시기',
+      f:function(it){ return it.subject==='영어' && it.type!=='대회' && !idIs(it,/vocab/) && it.region!=='잠실'; }},
+    {k:'vocab', name:'영어 어휘 늘리기', desc:'읽기량, 교재 순서, 하루 개수',
+      f:function(it){ return idIs(it,/-vocab-/); }},
+    {k:'engc',  name:'영어 시험·대회', desc:'TOSEL, 토플주니어, 말하기대회',
+      f:function(it){ return it.subject==='영어' && it.type==='대회'; }},
+    {k:'gifted',name:'영재원·KAIST', desc:'교육청·충남대·KAIST, 초4 11월',
+      f:function(it){ return idIs(it,/gifted|-kaist-|-ged-|yeongjae|youngjae/) && !idIs(it,/regional|kwagiwon|daesin|daeseong|gwacheon/); }},
+    {k:'wisc',  name:'웩슬러 검사', desc:'K-WISC-V, 대전에서 받는 곳, 비용',
+      f:function(it){ return idIs(it,/-wisc-/); }},
+    {k:'regional',name:'지역인재·지역의사', desc:'자격 요건, 충청권 의대 인원',
+      f:function(it){ return idIs(it,/-regional-|compare-daejeon-gwacheon-regional/); }},
+    {k:'jasago',name:'대전 자사고·과기원', desc:'대신고, 대성고, UNIST·GIST 진학',
+      f:function(it){ return idIs(it,/-daesin-|-daeseong-|-kwagiwon-/) || idIs(it,/trend-dunsan-(autonomous|dongsin|daejeon-science|gifted-school)/); }},
+    {k:'tdj',   name:'대전·둔산 흐름', desc:'학군, 진학, 사교육비, 제도 변화',
+      f:function(it){ return it.region==='둔산' && it.type==='트렌드'; }},
+    {k:'ttop',  name:'상위권은 뭘 하나', desc:'대치·목동 패턴, 입시 변화, 경고',
+      f:function(it){ return it.type==='트렌드' && (it.region==='대치'||it.region==='목동'||it.region==='공통'); }},
+    {k:'sci',   name:'과학·코딩 활동', desc:'과학관, 주니어닥터, 발명, 코딩',
+      f:function(it){ return it.subject==='과학' && (it.type==='경험'||it.type==='대회'); }},
+    {k:'etc',   name:'독서·역사·예체능', desc:'독후감 공모, 한국사, 미술, 체육, 봉사',
+      f:function(it){ return (it.subject==='국어'||it.subject==='사회'||it.subject==='예체능'||idIs(it,/-etc-|record-rules|roadmap-by-grade/)) && it.type!=='트렌드'; }},
+    {k:'gc',    name:'대전 vs 과천', desc:'지역인재, 학원가, 진학 경로 비교',
+      f:function(it){ return it.region==='과천' || idIs(it,/-compare-/); }},
+    {k:'js',    name:'잠실 (참고)', desc:'학원가, 과밀, 송파구 프로그램',
+      f:function(it){ return it.region==='잠실'; }},
+    {k:'all',   name:'전체 보기', desc:'모든 정보를 한 목록으로',
+      f:function(){ return true; }}
+  ];
+  var TOPIC_BY_KEY = {}; TOPICS.forEach(function(t){ TOPIC_BY_KEY[t.k]=t; });
+
+  // ── 상태 ──
   var OPTS = {
     region:  ['둔산','대치','목동','과천','잠실','공통'],
     grade:   ['초2','초3','초4','초5','초6','중1','중2','중3'],
     subject: ['수학','영어','국어','과학','사회','예체능','공통'],
-    type:    ['대회','학원','학습지','경험','로드맵','트렌드']
+    type:    TYPE_ORDER,
+    trust:   ['높음','보통','확인 필요']
   };
-  var state = {tab:'list', q:'', region:null, grade:null, subject:null, type:null};
-  try { state.tab = localStorage.getItem('edu.tab') || 'list'; } catch(e){}
+  var FLABEL = {region:'지역', grade:'학년', subject:'과목', type:'종류', trust:'신뢰도'};
+  var S = {view:'home', topic:null, q:'', f:{}, sort:'기본', limit:40, panel:false, grade:'초2'};
+  var favs = {};
+  try { favs = JSON.parse(localStorage.getItem('edu.favs')||'{}')||{}; S.grade = localStorage.getItem('edu.grade')||'초2'; } catch(e){}
+  function saveFavs(){ try{ localStorage.setItem('edu.favs', JSON.stringify(favs)); }catch(e){} }
 
-  // 필터 버튼 만들기
-  Object.keys(OPTS).forEach(function(key){
-    var row = document.querySelector('.row[data-key="'+key+'"]');
-    OPTS[key].forEach(function(v){
-      var b = document.createElement('button');
-      b.className='chip'; b.textContent=v; b.dataset.v=v;
-      b.onclick=function(){ state[key] = (state[key]===v) ? null : v; render(); };
-      row.appendChild(b);
-    });
-  });
-  document.querySelectorAll('.tabs button').forEach(function(b){
-    b.onclick=function(){ state.tab=b.dataset.tab; try{localStorage.setItem('edu.tab',state.tab);}catch(e){} render(); };
-  });
-  document.getElementById('q').addEventListener('input', function(e){ state.q=e.target.value.trim().toLowerCase(); render(); });
-
-  function matches(it){
-    if (state.region && it.region!==state.region) return false;
-    if (state.grade && (it.grades||[]).indexOf(state.grade)<0) return false;
-    if (state.subject && it.subject!==state.subject) return false;
-    if (state.type && it.type!==state.type) return false;
-    if (state.q){
-      var hay = [it.title,it.summary,it.note,it.timing,it.source,(it.grades||[]).join(' '),it.region,it.subject,it.type].join(' ').toLowerCase();
-      if (hay.indexOf(state.q)<0) return false;
-    }
-    return true;
+  // 주소(#)와 화면을 맞춰 폰 '뒤로' 버튼이 동작하게
+  function readHash(){
+    var h = (location.hash||'').replace(/^#\/?/, '');
+    S.topic = null;
+    if (h.indexOf('t/')===0 && TOPIC_BY_KEY[h.slice(2)]) { S.view='home'; S.topic=h.slice(2); }
+    else if (h==='grade') S.view='grade';
+    else if (h==='fav') S.view='fav';
+    else S.view='home';
+    S.f = {}; S.sort='기본'; S.limit=40; S.panel=false;
   }
-  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-  function card(it){
-    var trust = it.trust==='확인 필요' ? '<span class="trust-low">확인 필요</span>' : '신뢰도 '+esc(it.trust||'-');
-    var src = it.url ? '<a href="'+esc(it.url)+'" target="_blank" rel="noopener">'+esc(it.source||'출처')+'</a>' : esc(it.source||'');
-    return '<div class="card">'
-      + '<div class="tags"><span class="tag region">'+esc(it.region)+'</span>'
-      + '<span class="tag">'+esc((it.grades||[]).join('·'))+'</span>'
-      + '<span class="tag">'+esc(it.subject)+'</span><span class="tag">'+esc(it.type)+'</span>'
-      + (it.timing?'<span class="tag">'+esc(it.timing)+'</span>':'')
-      + (it.deadline?'<span class="tag">마감 '+esc(it.deadline)+'</span>':'') + '</div>'
-      + '<h3>'+esc(it.title)+'</h3><p>'+esc(it.summary)+'</p>'
-      + (it.note?'<div class="note">'+esc(it.note)+'</div>':'')
-      + '<div class="meta"><span>'+src+'</span><span>수집 '+esc(it.collected||'')+'</span><span>'+trust+'</span></div>'
-      + '</div>';
+  function go(hash){ if (location.hash===hash) { readHash(); render(); } else location.hash = hash; }
+  window.addEventListener('hashchange', function(){ readHash(); render(); window.scrollTo(0,0); });
+
+  // ── 한 줄(접힘) + 펼친 내용 ──
+  function row(it){
+    var d = dday(it);
+    var dd = d===null ? '' : (d<0 ? '<span class="dd past">마감 지남</span>' : '<span class="dd">'+(d===0?'오늘 마감':'D-'+d)+'</span>');
+    var tcls = it.trust==='높음'?'hi':(it.trust==='확인 필요'?'lo':'');
+    var src = it.url ? '<a href="'+esc(it.url)+'" target="_blank" rel="noopener">출처 열기 ↗</a><span>'+esc(it.source||'')+'</span>' : '<span>출처: '+esc(it.source||'-')+'</span>';
+    var trust = it.trust==='확인 필요' ? '<span class="lo-txt">확인 필요</span>' : '<span>신뢰도 '+esc(it.trust||'-')+'</span>';
+    var on = favs[it.id] ? ' on' : '';
+    return '<details class="it"><summary>'
+      + '<div class="t">'+esc(it.title)+'</div>'
+      + '<div class="m"><span class="dot '+tcls+'" title="신뢰도 '+esc(it.trust)+'"></span>'
+      + '<span class="rg">'+esc(it.region)+'</span><span>'+esc(it.type)+'</span>'
+      + (it.timing?'<span>· '+esc(it.timing)+'</span>':'') + dd + '</div>'
+      + '<button class="fav'+on+'" data-fav="'+esc(it.id)+'" aria-label="찜">'+(on?'★':'☆')+'</button>'
+      + '</summary><div class="body">'
+      + '<p>'+esc(it.summary)+'</p>'
+      + (it.note?'<p class="note">'+esc(it.note)+'</p>':'')
+      + '<div class="foot"><span>'+esc((it.grades||[]).join('·'))+'</span><span>'+esc(it.subject)+'</span>'
+      + (it.deadline?'<span>마감 '+esc(it.deadline)+'</span>':'')
+      + src + '<span>수집 '+esc(it.collected||'')+'</span>'+trust+'</div>'
+      + '</div></details>';
+  }
+  function byDefault(a,b){
+    var da=dday(a), db=dday(b);
+    var ua = da!==null&&da>=0 ? da : 9999, ub = db!==null&&db>=0 ? db : 9999;
+    if (ua!==ub) return ua-ub;                       // 다가오는 마감 먼저
+    var t = TRUST_RANK[a.trust]-TRUST_RANK[b.trust]; // 그다음 신뢰도 높은 것
+    if (t) return t;
+    return a.title.localeCompare(b.title,'ko');
+  }
+  function listBox(items){ return '<div class="list">'+items.map(row).join('')+'</div>'; }
+  function grouped(items){ // 종류별로 묶어서
+    var html='';
+    TYPE_ORDER.forEach(function(tp){
+      var g = items.filter(function(x){ return x.type===tp; });
+      if (!g.length) return;
+      html += '<div class="sec">'+esc(TYPE_LABEL[tp])+' <small>'+g.length+'</small></div>'+listBox(g);
+    });
+    return html;
+  }
+  var LEGEND = '<div class="legend"><span><i class="dot hi"></i>공식 자료</span><span><i class="dot"></i>언론·복수 출처</span><span><i class="dot lo"></i>확인 필요</span><span>☆ 누르면 찜</span></div>';
+
+  // ── 화면들 ──
+  function home(){
+    var html = '<h2>주제를 골라 보세요</h2><div class="topics">';
+    TOPICS.forEach(function(t){
+      var n = ITEMS.filter(t.f).length;
+      if (!n && t.k==='due') return;
+      html += '<button class="topic'+(t.hot?' hot':'')+'" data-topic="'+t.k+'"><b>'+esc(t.name)+'</b><small>'+esc(t.desc)+'</small><i>'+n+'건</i></button>';
+    });
+    html += '</div><p class="hint">위 검색창에 단어를 치면 전체에서 찾아요. 학년 기준으로 보려면 "학년별" 탭을 누르세요.</p>';
+    out.innerHTML = html;
   }
 
-  var GRADE_ORDER = OPTS.grade.concat(['초1']);
-  var SEASON_ORDER = ['봄학기','여름방학','가을학기','겨울방학','연중'];
-  function render(){
-    document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.toggle('on', b.dataset.tab===state.tab); });
-    Object.keys(OPTS).forEach(function(key){
-      document.querySelectorAll('.row[data-key="'+key+'"] .chip').forEach(function(b){ b.classList.toggle('on', state[key]===b.dataset.v); });
-    });
-    var list = ITEMS.filter(matches);
-    var out = document.getElementById('out');
-    document.getElementById('count').textContent = list.length+'건' + (list.length!==ITEMS.length?' / 전체 '+ITEMS.length+'건':'');
-    if (!list.length){ out.innerHTML='<div class="empty">맞는 정보가 아직 없어요.</div>'; return; }
-
-    if (state.tab==='list'){
-      list.sort(function(a,b){ return (b.collected||'').localeCompare(a.collected||''); });
-      out.innerHTML = list.map(card).join('');
-      return;
-    }
-    // 로드맵: 학년 → 시기 순으로 묶어서 보기. 여러 학년에 걸친 항목은 각 학년에 모두 나옴.
-    var groups = {};
-    list.forEach(function(it){
-      (it.grades||['기타']).forEach(function(g){
-        var k = g+' · '+(it.season||'연중');
-        (groups[k]=groups[k]||[]).push(it);
+  function results(){
+    var isSearch = !!S.q, topic = S.topic && TOPIC_BY_KEY[S.topic];
+    var base = S.view==='fav' ? ITEMS.filter(function(x){ return favs[x.id]; })
+             : topic ? ITEMS.filter(topic.f) : ITEMS.slice();
+    if (isSearch){
+      var words = S.q.toLowerCase().split(/\s+/).filter(Boolean);
+      base = (S.view==='fav'?base:ITEMS).filter(function(it){
+        var hay = [it.title,it.summary,it.note,it.timing,it.source,(it.grades||[]).join(' '),it.region,it.subject,it.type].join(' ').toLowerCase();
+        return words.every(function(w){ return hay.indexOf(w)>=0; });
       });
+    }
+    var items = base.filter(function(it){
+      if (S.f.region && it.region!==S.f.region) return false;
+      if (S.f.grade && (it.grades||[]).indexOf(S.f.grade)<0) return false;
+      if (S.f.subject && it.subject!==S.f.subject) return false;
+      if (S.f.type && it.type!==S.f.type) return false;
+      if (S.f.trust && it.trust!==S.f.trust) return false;
+      return true;
     });
-    var keys = Object.keys(groups).sort(function(a,b){
-      var ga=a.split(' · ')[0], gb=b.split(' · ')[0], sa=a.split(' · ')[1], sb=b.split(' · ')[1];
-      var d = GRADE_ORDER.indexOf(ga)-GRADE_ORDER.indexOf(gb);
-      return d!==0 ? d : SEASON_ORDER.indexOf(sa)-SEASON_ORDER.indexOf(sb);
+    if (S.sort==='마감순') items.sort(function(a,b){ var x=dday(a),y=dday(b); x=(x===null||x<0)?9999:x; y=(y===null||y<0)?9999:y; return x-y || byDefault(a,b); });
+    else if (S.sort==='신뢰도순') items.sort(function(a,b){ return TRUST_RANK[a.trust]-TRUST_RANK[b.trust] || byDefault(a,b); });
+    else items.sort(byDefault);
+
+    var title = isSearch ? '"'+S.q+'" 검색' : S.view==='fav' ? '찜한 정보' : topic.name;
+    var html = '<div class="head">'
+      + (S.view==='fav' && !isSearch ? '' : '<button class="back" data-home>← 주제 목록</button>')
+      + '<h3>'+esc(title)+'</h3><span class="n">'+items.length+'건</span></div>';
+
+    // 필터 줄: 켜진 필터는 바로 끌 수 있게
+    var active = Object.keys(S.f).filter(function(k){ return S.f[k]; });
+    html += '<div class="bar"><button class="pill'+(S.panel?' on':'')+'" data-panel>필터'+(active.length?' '+active.length:'')+'</button>';
+    active.forEach(function(k){ html += '<button class="pill on x" data-clear="'+k+'">'+esc(S.f[k])+'</button>'; });
+    html += '<select class="pill" id="sort" aria-label="정렬">'
+      + ['기본','마감순','신뢰도순'].map(function(s){ return '<option'+(S.sort===s?' selected':'')+'>'+s+'</option>'; }).join('') + '</select></div>';
+    html += '<div class="panel'+(S.panel?' open':'')+'">';
+    Object.keys(OPTS).forEach(function(k){
+      var have = {}; base.forEach(function(it){ if(k==='grade') (it.grades||[]).forEach(function(g){have[g]=1;}); else have[it[k]]=1; });
+      var chips = OPTS[k].filter(function(v){ return have[v]; });
+      if (chips.length<2) return;
+      html += '<div class="frow"><span>'+FLABEL[k]+'</span>'+chips.map(function(v){
+        return '<button class="chip'+(S.f[k]===v?' on':'')+'" data-f="'+k+'" data-v="'+esc(v)+'">'+esc(v)+'</button>'; }).join('')+'</div>';
     });
-    out.innerHTML = keys.map(function(k){ return '<div class="group">'+esc(k)+'</div>'+groups[k].map(card).join(''); }).join('');
+    html += '</div>';
+
+    if (!items.length){
+      html += '<div class="empty">'+(S.view==='fav'&&!isSearch&&!active.length ? '아직 찜한 정보가 없어요. 목록에서 ☆를 눌러 모아 보세요.' : '맞는 정보가 없어요. 필터를 줄이거나 다른 단어로 찾아보세요.')+'</div>';
+    } else if (S.sort==='기본' && !isSearch && S.topic!=='all' && S.topic!=='due' && items.length>8){
+      html += grouped(items) + LEGEND;
+    } else {
+      html += listBox(items.slice(0,S.limit));
+      if (items.length>S.limit) html += '<button class="more" data-more>더 보기 ('+(items.length-S.limit)+'건 남음)</button>';
+      html += LEGEND;
+    }
+    out.innerHTML = html;
   }
-  render();
+
+  var SEASONS = ['봄학기','여름방학','가을학기','겨울방학'];
+  var SEASON_HINT = {'봄학기':'3~6월','여름방학':'7~8월','가을학기':'9~11월','겨울방학':'12~2월'};
+  function gradeView(){
+    var html = '<h2>학년을 고르면 그 학년에 해당하는 것만 시기 순으로 보여요</h2><div class="grades">'
+      + OPTS.grade.map(function(g){ return '<button class="chip'+(S.grade===g?' on':'')+'" data-grade="'+g+'">'+g+'</button>'; }).join('') + '</div>';
+    // 지역 비교용(과천·잠실)과 순수 통계성 트렌드는 빼고, 실제로 '할 일'에 가까운 것만
+    var pool = ITEMS.filter(function(it){
+      return (it.grades||[]).indexOf(S.grade)>=0 && it.region!=='과천' && it.region!=='잠실' && it.type!=='트렌드';
+    });
+    var any = false;
+    SEASONS.forEach(function(s){
+      var g = pool.filter(function(it){ return it.season===s; }).sort(byDefault);
+      if (!g.length) return; any = true;
+      html += '<div class="sec">'+s+' <small>'+SEASON_HINT[s]+' · '+g.length+'건</small></div>'+listBox(g);
+    });
+    var yr = pool.filter(function(it){ return it.season==='연중'; }).sort(byDefault);
+    if (yr.length){ any = true;
+      html += '<div class="sec">연중 (시기 무관) <small>'+yr.length+'건</small></div>';
+      html += grouped(yr);
+    }
+    if (!any) html += '<div class="empty">이 학년에 해당하는 정보가 아직 없어요.</div>';
+    out.innerHTML = html + LEGEND;
+  }
+
+  function render(){
+    var tab = S.view==='home' ? 'home' : S.view;
+    document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.toggle('on', b.dataset.view===tab); });
+    var n = Object.keys(favs).filter(function(k){ return favs[k]; }).length;
+    $('favn').textContent = n ? n : '';
+    $('qx').style.display = S.q ? 'block' : 'none';
+    if (S.q || S.view==='fav' || S.topic) results();
+    else if (S.view==='grade') gradeView();
+    else home();
+  }
+
+  // ── 입력 처리 ──
+  document.querySelector('.tabs').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    S.q=''; $('q').value='';
+    go(b.dataset.view==='home' ? '#/' : '#/'+b.dataset.view);
+  });
+  var qt;
+  $('q').addEventListener('input', function(e){
+    clearTimeout(qt); var v = e.target.value.trim();
+    qt = setTimeout(function(){ S.q=v; S.limit=40; render(); }, 120);
+  });
+  $('qx').addEventListener('click', function(){ S.q=''; $('q').value=''; render(); $('q').focus(); });
+
+  out.addEventListener('click', function(e){
+    var el;
+    if ((el = e.target.closest('[data-fav]'))){ e.preventDefault();
+      var id = el.dataset.fav; if (favs[id]) delete favs[id]; else favs[id]=1; saveFavs();
+      el.classList.toggle('on', !!favs[id]); el.textContent = favs[id]?'★':'☆';
+      var n = Object.keys(favs).length; $('favn').textContent = n?n:''; return; }
+    if ((el = e.target.closest('[data-topic]'))){ go('#/t/'+el.dataset.topic); return; }
+    if (e.target.closest('[data-home]')){ S.q=''; $('q').value=''; go('#/'); return; }
+    if (e.target.closest('[data-panel]')){ S.panel=!S.panel; render(); return; }
+    if ((el = e.target.closest('[data-clear]'))){ delete S.f[el.dataset.clear]; render(); return; }
+    if ((el = e.target.closest('[data-f]'))){ var k=el.dataset.f, v=el.dataset.v;
+      if (S.f[k]===v) delete S.f[k]; else S.f[k]=v; S.limit=40; render(); return; }
+    if (e.target.closest('[data-more]')){ S.limit+=40; render(); return; }
+    if ((el = e.target.closest('[data-grade]'))){ S.grade=el.dataset.grade;
+      try{ localStorage.setItem('edu.grade', S.grade); }catch(err){} render(); return; }
+  });
+  out.addEventListener('change', function(e){ if (e.target.id==='sort'){ S.sort=e.target.value; render(); } });
+
+  readHash(); render();
 })();
 </script>
 </body>
