@@ -96,7 +96,7 @@
    - 앞으로 8주 안에 접수하는 초등 수학·영어·과학·독서·미술 대회와 인증시험 (HME, KMA, KMC, 성대경시, TOSEL, TOEFL Junior, 발명·독후감 공모 등)
    - 대전 지역: 국립중앙과학관 교육·캠프 접수, 대전수학문화관, 주니어닥터, 대전교육청 영재교육원 선발 공고(서부교육지원청 포함), 충남대 과학영재교육원
    - 제도 변화: 지역인재·지역의사 전형, 대전 자사고·과학고·영재학교 전형과 경쟁률, 영재원 선발 방식 (바뀐 게 있을 때만)
-   **조사 방법**: WebSearch는 한국어 결과가 부정확하니 보조로만 쓴다. 공식 사이트와 일정 페이지를 WebFetch로 직접 여는 것을 우선한다 (예: hme.chunjae.co.kr/hme/hme_info/hme_schedule.asp, kma-e.com/eval/schedule.asp, kmath.co.kr, toeflyss.or.kr/test/testSchedule, creverse.com/mt/daejeondunsan, creverse.com/april/dunsan, science.go.kr, edurang.net/dmcc, ged.kedi.re.kr). 글자가 깨지거나 일정이 안 보이는 사이트는 넘어간다.
+   **조사 방법**: 먼저 `docs/SOURCES.md`의 "매주 볼 곳" 표에 있는 주소를 WebFetch로 차례로 연다 (실제로 열리는 것을 확인한 공식 게시판 주소다). WebSearch는 한국어 결과가 부정확하니 보조로만 쓴다. 공식 사이트와 일정 페이지를 WebFetch로 직접 여는 것을 우선한다 (예: hme.chunjae.co.kr/hme/hme_info/hme_schedule.asp, kma-e.com/eval/schedule.asp, kmath.co.kr, toeflyss.or.kr/test/testSchedule, creverse.com/mt/daejeondunsan, creverse.com/april/dunsan, science.go.kr, edurang.net/dmcc, ged.kedi.re.kr). 글자가 깨지거나 일정이 안 보이는 사이트는 넘어간다.
    검색과 열람을 합쳐 **40회 안쪽**으로 끝낸다. 새 항목은 한 번에 **최대 12건**. 새 소식이 없으면 억지로 추가하지 않고 갱신 기록 메모에 "신규 없음"이라고 적는다.
    새 항목에는 `name`(훑어보기용 짧은 이름, 8~22자 명사구, 날짜·숫자 없이. 예: "KSMC 수학경시대회")을 꼭 넣고, `title`에는 날짜와 핵심을 담은 한 줄을 쓴다.
    cafe.naver.com 은 열 수 없으니 시도하지 않는다.
