@@ -136,6 +136,8 @@
   details.it>summary::-webkit-details-marker{display:none}
   details.it>summary:hover,details.it[open]>summary{background:var(--blue-soft)}
   .t{font-size:15.5px;font-weight:650;line-height:1.42}
+  .tt{font-size:13.5px;color:var(--pencil);line-height:1.45;margin-top:1px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  details.it[open] .tt{display:block}
   .m{font-size:12.5px;color:var(--pencil);margin-top:3px;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:center}
   .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--mid);display:inline-block}
   .dot.hi{background:var(--ok)} .dot.lo{background:var(--warn)}
@@ -179,8 +181,11 @@
 <main class="wrap"><div id="out"></div></main>
 <footer class="wrap">수집한 시점 기준이라 틀리거나 바뀐 내용이 있을 수 있어요. 주황 점은 공식 자료로 확인하지 못한 내용이에요. 고치거나 더할 것은 Claude에게 말하면 돼요.</footer>
 
-<script src="data/items.js"></script>
-<script src="data/guides.js"></script>
+<script>
+// 자료 파일은 하루에 한 번은 새로 받게 함 (자동 갱신이 반영되도록)
+(function(){ var d = new Date(), v = d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate() + (location.search.indexOf('fresh')>=0 ? '.'+Date.now() : '');
+  document.write('<script src="data/items.js?d='+v+'"><\/script><script src="data/guides.js?d='+v+'"><\/script>'); })();
+</script>
 <script>
 (function(){
   var ITEMS = window.ITEMS || [], GUIDES = window.GUIDES || {}, MILESTONES = window.MILESTONES || [];
@@ -277,6 +282,9 @@
 
   // ── 자료 한 줄 ──
   function ddText(d){ return d<0 ? '마감 지남' : d===0 ? '오늘' : 'D-'+d; }
+  function ageDays(it){ if (!it.collected) return 0; var p=it.collected.split('-');
+    return Math.round((TODAY - new Date(+p[0],+p[1]-1,+p[2]))/86400000); }
+  var pendingOpen = null, rulerOpen = false;   // 눌러서 들어온 항목을 펼쳐 보여주기 / 갈림길 전체 펼침
   function row(it){
     var d = dday(it);
     var dd = d===null ? '' : '<span class="dd'+(d<0?' past':'')+'">'+ddText(d)+'</span>';
@@ -284,10 +292,13 @@
     var src = it.url ? '<a href="'+esc(it.url)+'" target="_blank" rel="noopener">출처 열기</a><span>'+esc(it.source||'')+'</span>' : '<span>출처 '+esc(it.source||'없음')+'</span>';
     var trust = it.trust==='확인 필요' ? '<span class="lo-txt">확인 필요</span>' : '<span>신뢰도 '+esc(it.trust||'')+'</span>';
     var s = st[it.id] || '';
+    var old = ageDays(it) > 180;   // 수집한 지 반년 넘으면 표시
     return '<details class="it'+(s?' s-'+s:'')+'" data-id="'+esc(it.id)+'"><summary>'
-      + '<div class="t">'+esc(it.title)+'</div>'
+      + '<div class="t">'+esc(it.name || it.title)+'</div>'
+      + (it.name ? '<div class="tt">'+esc(it.title)+'</div>' : '')
       + '<div class="m"><span class="dot '+tcls+'" title="신뢰도 '+esc(it.trust)+'"></span>'
-      + dd + '<span>'+esc(it.region)+'</span>' + (it.timing?'<span>'+esc(it.timing)+'</span>':'') + '</div>'
+      + dd + '<span>'+esc(it.region)+'</span>' + (it.timing && !it.name?'<span>'+esc(it.timing)+'</span>':'')
+      + (old?'<span class="lo-txt">오래된 자료</span>':'') + '</div>'
       + '<button class="fav" data-fav aria-label="할 예정에 담기">'+(ST_MARK[s]||'☆')+'</button>'
       + '</summary><div class="body">'
       + '<div class="stb">'+['todo','done','skip'].map(function(v){
@@ -296,7 +307,8 @@
       + (it.note?'<p class="note">'+esc(it.note)+'</p>':'')
       + '<div class="foot"><span>'+esc((it.grades||[]).join(' '))+'</span><span>'+esc(it.subject)+'</span>'
       + (it.deadline?'<span>마감 '+esc(it.deadline)+'</span>':'')
-      + src + '<span>'+esc(it.collected||'')+' 수집</span>'+trust+'</div>'
+      + (it.timing && it.name?'<span>'+esc(it.timing)+'</span>':'')
+      + src + '<span>'+esc(it.collected||'')+' 수집'+(old?' (반년 넘음, 다시 확인 필요)':'')+'</span>'+trust+'</div>'
       + '</div></details>';
   }
   function byDefault(a,b){
@@ -354,7 +366,7 @@
     if (todo.length){
       html += '<h2 class="h">우리 집 할 예정</h2><p class="hs">직접 담아둔 것 '+todo.length+'건, 마감이 가까운 순서</p><div class="due">';
       todo.slice(0,5).forEach(function(it){ var d=dday(it);
-        html += '<button data-mine><b'+(d===null||d<0?' style="color:var(--mid)"':'')+'>'+(d===null?'상시':ddText(d))+'</b><span><u>'+esc(it.title)+'</u><em>'+esc(it.region)+(it.timing?', '+esc(it.timing):'')+'</em></span></button>'; });
+        html += '<button data-mine data-open="'+esc(it.id)+'"><b'+(d===null||d<0?' style="color:var(--mid)"':'')+'>'+(d===null?'상시':ddText(d))+'</b><span><u>'+esc(it.name||it.title)+'</u><em>'+esc(it.region)+(it.timing?', '+esc(it.timing):'')+'</em></span></button>'; });
       html += '</div>';
       if (todo.length>5) html += '<button class="linkbtn" data-mine>'+todo.length+'건 모두 보기</button>';
     }
@@ -365,26 +377,29 @@
     else {
       html += '<p class="hs">30일 안에 마감되거나 열리는 것 '+due.length+'건</p><div class="due">';
       due.slice(0,5).forEach(function(it){ var d=dday(it);
-        html += '<button data-topic="due"><b>'+ddText(d)+'</b><span><u>'+esc(it.title)+'</u><em>'+esc(it.region)+(it.timing?', '+esc(it.timing):'')+'</em></span></button>'; });
+        html += '<button data-topic="due" data-open="'+esc(it.id)+'"><b>'+ddText(d)+'</b><span><u>'+esc(it.name||it.title)+'</u><em>'+esc(it.region)+(it.timing?', '+esc(it.timing):'')+'</em></span></button>'; });
       html += '</div>';
       if (due.length>5) html += '<button class="linkbtn" data-topic="due">'+due.length+'건 모두 보기</button>';
     }
 
+    html += '<h2 class="h">궁금한 것 찾기</h2><p class="hs">주제마다 핵심 요약이 먼저 나오고, 근거 자료는 그 아래에 있어요.</p><div class="toc">';
+    TOPICS.forEach(function(t){ if (t.k==='due') return;
+      html += '<button data-topic="'+t.k+'"><b>'+esc(t.name)+'</b><span>'+esc(t.desc)+'</span></button>'; });
+    html += '</div>';
+
+    var later = 0;
     html += '<h2 class="h">앞으로의 갈림길</h2><p class="hs">형광펜은 놓치면 되돌리기 어려운 결정이에요. 누르면 자세한 내용이 열려요.</p><div class="ruler">';
     ALL_GRADES.forEach(function(g, i){
       var ms = MILESTONES.filter(function(m){ return m.grade===g; });
       if (!ms.length) return;
+      if (!rulerOpen && i > gi+1) { later += ms.length; return; }   // 처음엔 지금 학년과 다음 학년만
       html += '<div class="gr'+(i<gi?' past':'')+'"><div class="gl">'+g+(i===gi?'<br><i>지금</i>':'')+'</div><div class="ms">'
         + ms.map(function(m){ return '<button'+(m.big?' class="big"':'')+' data-topic="'+esc(m.topic)+'"><span class="w">'+esc(m.when)+'</span>'
             + '<span class="ti">'+esc(m.title)+'</span><span class="de">'+esc(m.desc)+'</span></button>'; }).join('')
         + '</div></div>';
     });
     html += '</div>';
-
-    html += '<h2 class="h">궁금한 것 찾기</h2><p class="hs">주제마다 핵심 요약이 먼저 나오고, 근거 자료는 그 아래에 있어요.</p><div class="toc">';
-    TOPICS.forEach(function(t){ if (t.k==='due') return;
-      html += '<button data-topic="'+t.k+'"><b>'+esc(t.name)+'</b><span>'+esc(t.desc)+'</span><i>'+ITEMS.filter(t.f).length+'</i></button>'; });
-    html += '</div>';
+    if (later) html += '<button class="more" data-ruler>'+ALL_GRADES[Math.min(gi+2, ALL_GRADES.length-1)]+'부터 중3까지 '+later+'개 더 보기</button>';
     out.innerHTML = html;
   }
 
@@ -482,6 +497,10 @@
     else if (S.q || S.topic) results();
     else if (S.view==='grade') gradeView();
     else home();
+    if (pendingOpen){   // 눌러서 들어온 그 항목을 펼친 채로 보여줌
+      var box = out.querySelector('details.it[data-id="'+pendingOpen.replace(/"/g,'')+'"]'); pendingOpen = null;
+      if (box){ box.open = true; setTimeout(function(){ box.scrollIntoView({block:'center'}); }, 30); }
+    }
   }
 
   // ── 입력 ──
@@ -499,14 +518,15 @@
     if ((el = e.target.closest('[data-fav]'))){ e.preventDefault();
       var cur = st[el.closest('details.it').dataset.id]; setSt(el, cur ? null : 'todo'); return; }
     if ((el = e.target.closest('[data-st]'))){ setSt(el, el.dataset.st); return; }
-    if (e.target.closest('[data-mine]')){ go('#/fav'); return; }
+    if ((el = e.target.closest('[data-mine]'))){ pendingOpen = el.dataset.open||null; go('#/fav'); return; }
+    if (e.target.closest('[data-ruler]')){ rulerOpen = true; render(); return; }
     if (e.target.closest('[data-export]')){ window.prompt('아래 글자를 모두 복사해서 다른 기기의 가져오기에 붙여넣으세요.', JSON.stringify(st)); return; }
     if (e.target.closest('[data-import]')){
       var txt = window.prompt('다른 기기에서 내보낸 글자를 붙여넣으세요. 지금 목록에 합쳐져요.'); if (!txt) return;
       try { var o = JSON.parse(txt); Object.keys(o).forEach(function(k){ if (ST_LABEL[o[k]]) st[k]=o[k]; }); saveSt(); render(); }
       catch(err){ window.alert('글자를 읽지 못했어요. 내보내기에서 받은 글자를 처음부터 끝까지 붙여넣었는지 확인하세요.'); }
       return; }
-    if ((el = e.target.closest('[data-topic]'))){ go('#/t/'+el.dataset.topic); return; }
+    if ((el = e.target.closest('[data-topic]'))){ pendingOpen = el.dataset.open||null; go('#/t/'+el.dataset.topic); return; }
     if (e.target.closest('[data-home]')){ S.q=''; $('q').value=''; go('#/'); return; }
     if (e.target.closest('[data-panel]')){ S.panel=!S.panel; render(); return; }
     if ((el = e.target.closest('[data-clear]'))){ delete S.f[el.dataset.clear]; render(); return; }

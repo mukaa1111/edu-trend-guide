@@ -10,7 +10,7 @@
 // 고친 뒤에는 꼭 `node scripts/check.js` 로 검사하세요.
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const FILE = path.join(__dirname, '..', 'data', 'items.js');
-const ORDER = ['id', 'title', 'summary', 'region', 'grades', 'season', 'timing', 'subject', 'type', 'url', 'source', 'collected', 'trust', 'deadline', 'note'];
+const ORDER = ['id', 'name', 'title', 'summary', 'region', 'grades', 'season', 'timing', 'subject', 'type', 'url', 'source', 'collected', 'trust', 'deadline', 'note'];
 const fmt = (x) => '  { ' + ORDER.filter((k) => x[k] !== undefined && x[k] !== null)
   .concat(Object.keys(x).filter((k) => !ORDER.includes(k) && x[k] !== null && x[k] !== undefined))
   .map((k) => k + ': ' + JSON.stringify(x[k])).join(', ') + ' }';
