@@ -142,7 +142,12 @@
   .dd{color:var(--red);font-weight:800}
   .dd.past{color:var(--mid);font-weight:500}
   .fav{position:absolute;right:4px;top:6px;border:0;background:none;font-size:21px;line-height:1;padding:8px 10px;color:var(--mid)}
-  .fav.on{color:#e0a800}
+  .s-todo .fav{color:#e0a800} .s-done .fav{color:var(--ok);font-weight:800} .s-skip .fav{color:var(--mid)}
+  details.s-skip>summary .t, details.s-done>summary .t{color:var(--pencil);font-weight:500}
+  details.s-done>summary .t{text-decoration:line-through;text-decoration-color:var(--mid)}
+  .stb{display:flex;gap:6px;padding-top:10px}
+  .stb button{flex:1;border:1.5px solid var(--rule);background:var(--paper);border-radius:8px;padding:8px 4px;font-size:13.5px;font-weight:600}
+  .stb button.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
   .body{padding:0 14px 14px;font-size:15px}
   .body p{margin:9px 0 0}
   .body .note{color:var(--pencil);font-size:13.5px;border-left:3px solid var(--rule);padding-left:10px}
@@ -167,7 +172,7 @@
   <div class="tabs">
     <button data-view="home">한눈에</button>
     <button data-view="grade">학년별</button>
-    <button data-view="fav">찜 <span id="favn"></span></button>
+    <button data-view="fav">우리 집 <span id="favn"></span></button>
   </div>
 </div></div>
 
@@ -244,10 +249,19 @@
     subject:['수학','영어','국어','과학','사회','예체능','공통'], type:TYPE_ORDER, trust:['높음','보통','확인 필요'] };
   var FLABEL = {region:'지역', grade:'학년', subject:'과목', type:'종류', trust:'신뢰도'};
   var S = {view:'home', topic:null, q:'', f:{}, sort:'기본', limit:40, panel:false, grade:CHILD};
-  var favs = {};
-  try { favs = JSON.parse(localStorage.getItem('edu.favs')||'{}')||{}; S.grade = localStorage.getItem('edu.grade')||CHILD; } catch(e){}
-  function saveFavs(){ try{ localStorage.setItem('edu.favs', JSON.stringify(favs)); }catch(e){} }
-  function favCount(){ return Object.keys(favs).filter(function(k){ return favs[k]; }).length; }
+  // 우리 집 상태: 자료마다 'todo'(할 예정) | 'done'(했음) | 'skip'(관심 없음). 이 브라우저에만 저장.
+  var st = {};
+  try {
+    st = JSON.parse(localStorage.getItem('edu.st')||'{}')||{};
+    var old = JSON.parse(localStorage.getItem('edu.favs')||'{}')||{};   // 예전 '찜'은 할 예정으로 옮김
+    Object.keys(old).forEach(function(k){ if (old[k] && !st[k]) st[k]='todo'; });
+    S.grade = localStorage.getItem('edu.grade')||CHILD;
+  } catch(e){}
+  function saveSt(){ try{ localStorage.setItem('edu.st', JSON.stringify(st)); }catch(e){} }
+  function countSt(v){ return Object.keys(st).filter(function(k){ return st[k]===v; }).length; }
+  var ST_MARK = {todo:'★', done:'✓', skip:'–'};
+  var ST_LABEL = {todo:'할 예정', done:'했음', skip:'관심 없음'};
+  var ITEM_BY_ID = {}; ITEMS.forEach(function(it){ ITEM_BY_ID[it.id]=it; });
 
   function readHash(){
     var h = (location.hash||'').replace(/^#\/?/, '');
@@ -269,13 +283,15 @@
     var tcls = it.trust==='높음'?'hi':(it.trust==='확인 필요'?'lo':'');
     var src = it.url ? '<a href="'+esc(it.url)+'" target="_blank" rel="noopener">출처 열기</a><span>'+esc(it.source||'')+'</span>' : '<span>출처 '+esc(it.source||'없음')+'</span>';
     var trust = it.trust==='확인 필요' ? '<span class="lo-txt">확인 필요</span>' : '<span>신뢰도 '+esc(it.trust||'')+'</span>';
-    var on = favs[it.id] ? ' on' : '';
-    return '<details class="it"><summary>'
+    var s = st[it.id] || '';
+    return '<details class="it'+(s?' s-'+s:'')+'" data-id="'+esc(it.id)+'"><summary>'
       + '<div class="t">'+esc(it.title)+'</div>'
       + '<div class="m"><span class="dot '+tcls+'" title="신뢰도 '+esc(it.trust)+'"></span>'
       + dd + '<span>'+esc(it.region)+'</span>' + (it.timing?'<span>'+esc(it.timing)+'</span>':'') + '</div>'
-      + '<button class="fav'+on+'" data-fav="'+esc(it.id)+'" aria-label="찜">'+(on?'★':'☆')+'</button>'
+      + '<button class="fav" data-fav aria-label="할 예정에 담기">'+(ST_MARK[s]||'☆')+'</button>'
       + '</summary><div class="body">'
+      + '<div class="stb">'+['todo','done','skip'].map(function(v){
+          return '<button data-st="'+v+'"'+(s===v?' class="on"':'')+'>'+ST_LABEL[v]+'</button>'; }).join('')+'</div>'
       + '<p>'+esc(it.summary)+'</p>'
       + (it.note?'<p class="note">'+esc(it.note)+'</p>':'')
       + '<div class="foot"><span>'+esc((it.grades||[]).join(' '))+'</span><span>'+esc(it.subject)+'</span>'
@@ -299,14 +315,51 @@
     });
     return html;
   }
-  var LEGEND = '<div class="legend"><span><i class="dot hi"></i>공식 자료</span><span><i class="dot"></i>언론, 여러 출처</span><span><i class="dot lo"></i>확인 필요</span><span>☆ 누르면 찜</span></div>';
+  var LEGEND = '<div class="legend"><span><i class="dot hi"></i>공식 자료</span><span><i class="dot"></i>언론, 여러 출처</span><span><i class="dot lo"></i>확인 필요</span><span>☆ 누르면 할 예정에 담겨요</span></div>';
+
+  // 상태를 바꾸고, 열려 있는 그 줄만 바로 고쳐 그림 (목록을 다시 그리면 펼친 게 닫히므로)
+  function setSt(el, v){
+    var box = el.closest('details.it'); if (!box) return;
+    var id = box.dataset.id;
+    if (!v || st[id]===v) delete st[id]; else st[id]=v;
+    saveSt();
+    var s = st[id] || '';
+    box.className = 'it' + (s?' s-'+s:'');
+    box.querySelector('.fav').textContent = ST_MARK[s] || '☆';
+    box.querySelectorAll('.stb button').forEach(function(b){ b.classList.toggle('on', b.dataset.st===s); });
+    paintCount();
+  }
+  function paintCount(){ var n = countSt('todo'); $('favn').textContent = n ? n : ''; }
+
+  // ── 우리 집 ──
+  function mine(){
+    var html = '<h2 class="title">우리 집</h2><p class="hs" style="margin-top:8px">자료를 펼쳐 할 예정, 했음, 관심 없음을 누르면 여기에 모여요. 이 기기에만 저장돼요.</p>';
+    var any = false;
+    ['todo','done','skip'].forEach(function(v){
+      var g = Object.keys(st).filter(function(k){ return st[k]===v && ITEM_BY_ID[k]; }).map(function(k){ return ITEM_BY_ID[k]; }).sort(byDefault);
+      if (!g.length) return; any = true;
+      html += '<div class="sec">'+ST_LABEL[v]+' <small>'+g.length+'</small></div>'+listBox(g);
+    });
+    if (!any) html += '<div class="empty">아직 표시한 게 없어요. 자료 오른쪽의 ☆를 누르면 할 예정에 담겨요.</div>';
+    html += '<p class="hs" style="margin-top:22px">폰과 PC에서 같은 목록을 보려면 <button class="linkbtn" style="padding:0" data-export>내보내기</button> 로 받은 글자를 다른 기기에서 <button class="linkbtn" style="padding:0" data-import>가져오기</button> 에 붙여넣으세요.</p>';
+    out.innerHTML = html;
+  }
 
   // ── 한눈에 (홈) ──
   function home(){
     var month = NOW.getMonth()+1;
     var html = '<p class="now">'+CHILD+', '+month+'월<small>지금 챙길 것과 앞으로 올 갈림길을 먼저 보여드려요.</small></p>';
 
-    var due = ITEMS.filter(TOPIC_BY_KEY.due.f).sort(byDefault);
+    var todo = Object.keys(st).filter(function(k){ return st[k]==='todo' && ITEM_BY_ID[k]; }).map(function(k){ return ITEM_BY_ID[k]; }).sort(byDefault);
+    if (todo.length){
+      html += '<h2 class="h">우리 집 할 예정</h2><p class="hs">직접 담아둔 것 '+todo.length+'건, 마감이 가까운 순서</p><div class="due">';
+      todo.slice(0,5).forEach(function(it){ var d=dday(it);
+        html += '<button data-mine><b'+(d===null||d<0?' style="color:var(--mid)"':'')+'>'+(d===null?'상시':ddText(d))+'</b><span><u>'+esc(it.title)+'</u><em>'+esc(it.region)+(it.timing?', '+esc(it.timing):'')+'</em></span></button>'; });
+      html += '</div>';
+      if (todo.length>5) html += '<button class="linkbtn" data-mine>'+todo.length+'건 모두 보기</button>';
+    }
+
+    var due = ITEMS.filter(TOPIC_BY_KEY.due.f).filter(function(it){ return st[it.id]!=='skip' && st[it.id]!=='done'; }).sort(byDefault);
     html += '<h2 class="h">이번 달 챙길 것</h2>';
     if (!due.length) html += '<p class="hs">30일 안에 마감되는 게 없어요.</p>';
     else {
@@ -338,7 +391,7 @@
   // ── 주제 / 검색 / 찜 ──
   function results(){
     var isSearch = !!S.q, topic = S.topic && TOPIC_BY_KEY[S.topic];
-    var base0 = S.view==='fav' ? ITEMS.filter(function(x){ return favs[x.id]; }) : topic ? ITEMS.filter(topic.f) : ITEMS.slice();
+    var base0 = S.view==='fav' ? ITEMS.filter(function(x){ return st[x.id]; }) : topic ? ITEMS.filter(topic.f) : ITEMS.slice();
     if (isSearch){
       var words = S.q.toLowerCase().split(/\s+/).filter(Boolean);
       base0 = (S.view==='fav'?base0:ITEMS).filter(function(it){
@@ -358,7 +411,7 @@
     else if (S.sort==='신뢰도순') items.sort(function(a,b){ return TRUST_RANK[a.trust]-TRUST_RANK[b.trust] || byDefault(a,b); });
     else items.sort(byDefault);
 
-    var title = isSearch ? '“'+S.q+'” 찾은 결과' : S.view==='fav' ? '찜한 것' : topic.name;
+    var title = isSearch ? '“'+S.q+'” 찾은 결과' : S.view==='fav' ? '우리 집' : topic.name;
     var html = (S.view==='fav' && !isSearch ? '' : '<button class="back" data-home>‹ 한눈에 보기로</button>')
       + '<h2 class="title">'+esc(title)+'</h2>';
 
@@ -385,7 +438,7 @@
     html += '</div>';
 
     if (!items.length){
-      html += '<div class="empty">'+(S.view==='fav'&&!isSearch&&!active.length ? '아직 찜한 게 없어요. 자료 오른쪽의 ☆를 누르면 여기에 모여요.' : '맞는 자료가 없어요. 고른 조건을 줄이거나 다른 단어로 찾아보세요.')+'</div>';
+      html += '<div class="empty">맞는 자료가 없어요. 고른 조건을 줄이거나 다른 단어로 찾아보세요.</div>';
     } else if (S.sort==='기본' && !isSearch && S.topic!=='all' && S.topic!=='due' && items.length>8){
       html += grouped(items) + LEGEND;
     } else {
@@ -423,9 +476,10 @@
 
   function render(){
     document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.toggle('on', b.dataset.view===S.view); });
-    var n = favCount(); $('favn').textContent = n ? n : '';
+    paintCount();
     $('qx').style.display = S.q ? 'block' : 'none';
-    if (S.q || S.view==='fav' || S.topic) results();
+    if (S.view==='fav' && !S.q) mine();
+    else if (S.q || S.topic) results();
     else if (S.view==='grade') gradeView();
     else home();
   }
@@ -443,9 +497,15 @@
   out.addEventListener('click', function(e){
     var el;
     if ((el = e.target.closest('[data-fav]'))){ e.preventDefault();
-      var id = el.dataset.fav; if (favs[id]) delete favs[id]; else favs[id]=1; saveFavs();
-      el.classList.toggle('on', !!favs[id]); el.textContent = favs[id]?'★':'☆';
-      var n = favCount(); $('favn').textContent = n?n:''; return; }
+      var cur = st[el.closest('details.it').dataset.id]; setSt(el, cur ? null : 'todo'); return; }
+    if ((el = e.target.closest('[data-st]'))){ setSt(el, el.dataset.st); return; }
+    if (e.target.closest('[data-mine]')){ go('#/fav'); return; }
+    if (e.target.closest('[data-export]')){ window.prompt('아래 글자를 모두 복사해서 다른 기기의 가져오기에 붙여넣으세요.', JSON.stringify(st)); return; }
+    if (e.target.closest('[data-import]')){
+      var txt = window.prompt('다른 기기에서 내보낸 글자를 붙여넣으세요. 지금 목록에 합쳐져요.'); if (!txt) return;
+      try { var o = JSON.parse(txt); Object.keys(o).forEach(function(k){ if (ST_LABEL[o[k]]) st[k]=o[k]; }); saveSt(); render(); }
+      catch(err){ window.alert('글자를 읽지 못했어요. 내보내기에서 받은 글자를 처음부터 끝까지 붙여넣었는지 확인하세요.'); }
+      return; }
     if ((el = e.target.closest('[data-topic]'))){ go('#/t/'+el.dataset.topic); return; }
     if (e.target.closest('[data-home]')){ S.q=''; $('q').value=''; go('#/'); return; }
     if (e.target.closest('[data-panel]')){ S.panel=!S.panel; render(); return; }
