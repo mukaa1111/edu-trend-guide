@@ -234,6 +234,8 @@
       f:function(it){ return idIs(it,/-daesin-|-daeseong-|-kwagiwon-/) || idIs(it,/trend-dunsan-(autonomous|dongsin|daejeon-science|gifted-school)/); }},
     {k:'sci',   name:'과학과 코딩 활동', desc:'과학관, 주니어닥터, 발명',
       f:function(it){ return it.subject==='과학' && (it.type==='경험'||it.type==='대회'); }},
+    {k:'video', name:'볼거리 영상', desc:'믿을 만한 과학·역사 채널',
+      f:function(it){ return idIs(it,/-video/); }},
     {k:'etc',   name:'독서·역사·예체능', desc:'공모전, 한국사, 미술, 체육',
       f:function(it){ return (it.subject==='국어'||it.subject==='사회'||it.subject==='예체능'||idIs(it,/-etc-|record-rules|roadmap-by-grade/)) && it.type!=='트렌드'; }},
     {k:'tdj',   name:'대전·둔산은 지금', desc:'학군, 진학, 제도 변화',
