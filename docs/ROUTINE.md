@@ -20,7 +20,7 @@
 | GitHub 저장소·폰 주소 (mukaa1111/edu-trend-guide) | 내 GitHub 계정 | 그대로. Claude 계정과 무관 |
 | 자동 갱신 루틴 | Claude 계정 | **새 계정에서 다시 만들기** (아래 설정 그대로) |
 | Claude ↔ GitHub 연결 | Claude 계정 | 새 계정에서 다시 연결 + Claude GitHub App에 이 저장소 허용 |
-| 텔레그램 봇·토큰 | 내 텔레그램 계정 | 그대로. 새 계정 클라우드 환경에 환경 변수만 다시 입력 |
+| 텔레그램 전용 봇·토큰 | 내 텔레그램 계정 | 그대로. 새 계정 클라우드 환경에 `EDU_TELEGRAM_BOT_TOKEN`만 다시 입력 |
 | "우리 집" 표시 (할 예정·했음) | 각 기기의 브라우저 | 그대로. Claude 계정과 무관 |
 
 ## 루틴 설정
@@ -29,15 +29,15 @@
 - **모델**: claude-sonnet-5-5
 - **저장소**: https://github.com/mukaa1111/edu-trend-guide
 - **도구**: Bash, Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
-- **환경 변수**: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (weekend-events와 같은 봇을 그대로 써요. 설정법은 weekend-events의 `docs/TELEGRAM.md` 1~4번)
-  - 같은 봇을 쓰면 **교육 수첩 알림에는 답장하지 마세요.** 주말 뭐하지의 저녁 루틴이 그 답장을 행사 요청으로 읽어요.
-  - 답장도 쓰고 싶으면 BotFather에서 봇을 하나 더 만들고 그 토큰을 `EDU_TELEGRAM_BOT_TOKEN`으로 넣으면 돼요. 있으면 그걸 먼저 써요.
+- **환경 변수**: `EDU_TELEGRAM_BOT_TOKEN`(교육 수첩 전용 봇 토큰), `TELEGRAM_CHAT_ID`(이미 있는 것 그대로). 봇 만드는 법은 `docs/TELEGRAM.md`.
+  - 전용 봇을 쓰는 이유: 주말 뭐하지와 같은 봇이면 이 알림에 단 답장을 그쪽 저녁 루틴이 행사 요청으로 읽어요.
+  - 전용 봇 토큰이 없으면 기존 `TELEGRAM_BOT_TOKEN`으로 보내요 (그때는 답장하지 않기).
 - **현재 루틴 주소**: (아직 만들지 않음. 만들면 여기에 적기)
 
 ## 새 계정에서 만드는 순서
 1. 새 계정으로 https://claude.ai/code 로그인 → 아래쪽 "저장소"에서 GitHub 연결
 2. https://github.com/apps/claude/installations/select_target 에서 mukaa1111 선택 → **edu-trend-guide** 저장소 허용 (weekend-events, ai-trend-radar도 같이 허용해 두면 편해요)
-3. claude.ai/code 환경(Default) 설정에서 환경 변수 2개를 넣고, 네트워크 접근을 "전체"로 바꾸기 (한국 사이트가 기본 설정에서는 안 열려요)
+3. claude.ai/code 환경(Default) 설정에서 환경 변수(`EDU_TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`)를 넣고, 네트워크 접근을 "전체"로 바꾸기 (한국 사이트가 기본 설정에서는 안 열려요)
 4. Claude Code에서 이 폴더를 열고 "docs/ROUTINE.md대로 루틴 만들어줘"라고 말하기
 5. 만든 뒤 한 번 "지금 실행"해서 GitHub에 새 커밋이 올라오고 텔레그램이 오는지 확인
 6. 이 문서의 "현재 루틴 주소"에 주소 적기
@@ -101,7 +101,6 @@
 - 제목 한 줄 (최대 5개, 없으면 이 묶음 생략)
 
 보기: https://mukaa1111.github.io/edu-trend-guide/
-(이 알림에는 답장하지 마세요)
 
 제목은 40자 안쪽으로 줄여 쓴다. 환경 변수가 없으면 스크립트가 알아서 건너뛰니 오류로 보지 않는다.
 

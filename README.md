@@ -32,3 +32,4 @@
 - `scripts/check.js`: 자료 형식 검사 (`node scripts/check.js`), `scripts/telegram.sh`: 텔레그램 전송.
 - Claude에게 하는 말: "이번 주 갱신해줘" (루틴과 같은 일을 지금 실행), "docs/ROUTINE.md대로 루틴 만들어줘" (새 계정에서 예약 만들기)
 - `scripts/edit.js`: 자료를 한 건씩 찾고 고치는 도구 (자동 갱신이 350KB 파일을 통째로 읽지 않게 함). 사용법은 파일 맨 위 주석.
+- 텔레그램은 교육 수첩 전용 봇을 써요. 만드는 법: `docs/TELEGRAM.md`

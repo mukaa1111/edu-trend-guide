@@ -6,9 +6,8 @@
 #   TELEGRAM_CHAT_ID    - 받을 사람(나)의 chat id
 # 둘 중 하나라도 없으면 아무것도 보내지 않고 조용히 끝납니다 (exit 0).
 #
-# 교육 수첩 전용 봇을 따로 쓰려면 EDU_TELEGRAM_BOT_TOKEN (필요하면 EDU_TELEGRAM_CHAT_ID)을 넣으세요.
-# 있으면 그걸 먼저 씁니다. 같은 봇을 '주말 뭐하지'와 함께 쓰면, 이 알림에 답장했을 때
-# 주말 뭐하지의 저녁 루틴이 그 답장을 행사 요청으로 읽으니 답장하지 마세요.
+# 교육 수첩은 전용 봇을 씁니다: EDU_TELEGRAM_BOT_TOKEN (받는 사람이 다르면 EDU_TELEGRAM_CHAT_ID).
+# 없으면 기존 TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID 로 보냅니다. 설정법: docs/TELEGRAM.md
 
 set -u
 TEXT="${1:-}"
