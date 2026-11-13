@@ -111,6 +111,24 @@
   .core li::before{content:"";position:absolute;left:0;top:15px;width:9px;height:9px;background:var(--marker);border-radius:2px}
   .core .watch{margin:10px 0 0;font-size:14px;color:var(--red);line-height:1.5}
 
+  .core .lead{margin:0 0 6px;font-size:16.5px;font-weight:700;line-height:1.5}
+  .core .ours{margin:10px 0 0;font-size:14.5px;line-height:1.55;background:var(--blue-soft);border-radius:6px;padding:9px 11px}
+  .core .ours b{font-weight:800}
+  .core .golink{margin-top:6px}
+  .core h6{display:flex;align-items:baseline;gap:10px;margin:14px 0 2px;padding-top:12px;border-top:1px solid var(--rule);font-size:15px;font-weight:800}
+  .core h6 .linkbtn{padding:0;font-size:13px;margin-left:auto;white-space:nowrap}
+  /* 검색 결과 정리 */
+  .dg{background:var(--paper);border:1px solid var(--rule);border-radius:8px;margin-top:14px;overflow:hidden}
+  .dg h4{margin:0;padding:14px 16px 2px;font-size:13.5px;font-weight:800;color:var(--pencil)}
+  .dg .sum{margin:0;padding:0 16px 10px;font-size:14px;color:var(--pencil);line-height:1.5}
+  .dg .sum b{color:var(--ink)}
+  .dg button{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:11px 16px}
+  .dg button:hover{background:var(--blue-soft)}
+  .dg .n{display:block;font-size:15.5px;font-weight:700;line-height:1.4}
+  .dg .n i{font-style:normal;color:var(--red);font-weight:800;margin-right:6px}
+  .dg .s{display:block;font-size:14.5px;line-height:1.55;margin-top:2px}
+  .dg .w{display:block;font-size:12.5px;color:var(--pencil);margin-top:3px}
+
   .bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:26px 0 8px}
   .bar h5{margin:0;font-size:16px;font-weight:800;flex:1;min-width:110px}
   .bar h5 small{font-weight:500;color:var(--pencil);font-size:13px}
@@ -168,7 +186,7 @@
 <div class="top"><div class="wrap">
   <div class="brand"><a href="#/">우리 아이 교육 수첩</a><span id="updated"></span></div>
   <div class="search">
-    <input id="q" type="search" placeholder="찾기: 황소, 웩슬러, 지역인재, 경시대회" autocomplete="off" aria-label="찾기">
+    <input id="q" type="search" placeholder="찾기: 수학, 영어, 황소, 학습지, 웩슬러" autocomplete="off" aria-label="찾기">
     <button id="qx" aria-label="검색어 지우기">×</button>
   </div>
   <div class="tabs">
@@ -405,6 +423,69 @@
     out.innerHTML = html;
   }
 
+  // ── 검색 결과 정리 ──
+  // 검색어에 이 단어가 들어 있으면 그 주제의 '핵심만'을 결과 위에 보여줌
+  var TOPIC_KEYS = [
+    ['wisc',['웩슬러','wisc','지능검사']], ['regional',['지역인재','지역의사']], ['gifted',['영재']],
+    ['mathc',['경시','hme','kma','kmc']], ['engc',['토셀','tosel','토플','toefl','말하기 대회','말하기대회']],
+    ['vocab',['어휘','단어','보카']], ['jasago',['자사고','대신고','대성고','과기원']], ['sci',['과학관','주니어닥터','코딩']],
+    ['math',['선행','심화','연산','최상위']], ['eng',['원서','파닉스','문법']]
+  ];
+  var BRIEFS = window.BRIEFS || [];
+  function hasKey(q, keys){ var s = q.toLowerCase(), t = s.replace(/\s+/g,'');
+    return keys.some(function(k){ k = k.toLowerCase(); return s.indexOf(k)>=0 || t.indexOf(k.replace(/\s+/g,''))>=0; }); }
+  function coreBox(title, g, topicKey){
+    return '<div class="core"><h4>'+esc(title)+'</h4>'
+      + (g.lead?'<p class="lead">'+esc(g.lead)+'</p>':'')
+      + (g.points?'<ul>'+g.points.map(function(p){ return '<li>'+esc(p)+'</li>'; }).join('')+'</ul>':'')
+      + (g.groups||[]).map(function(gr){
+          return '<h6>'+esc(gr.h)+(gr.topic?'<button class="linkbtn" data-topic="'+esc(gr.topic)+'">자료 보기 ›</button>':'')+'</h6>'
+            + '<ul>'+gr.points.map(function(p){ return '<li>'+esc(p)+'</li>'; }).join('')+'</ul>'; }).join('')
+      + (g.ours?'<p class="ours"><b>우리 집 기준</b> '+esc(g.ours)+'</p>':'')
+      + (g.ask?'<p class="watch">물어볼 것: '+esc(g.ask)+'</p>':'')
+      + (g.watch?'<p class="watch">조심할 점: '+esc(g.watch)+'</p>':'')
+      + (topicKey?'<button class="linkbtn golink" data-topic="'+esc(topicKey)+'">이 주제 자료 모두 보기 ›</button>':'')
+      + '</div>';
+  }
+  function briefs(q){
+    var html = '', n = 0;
+    BRIEFS.forEach(function(b){ if (n<2 && hasKey(q, b.keys)){ html += coreBox(b.name+' 한눈에', b); n++; } });
+    TOPIC_KEYS.forEach(function(tk){ var g = GUIDES[tk[0]];
+      if (n<2 && g && hasKey(q, tk[1])){ html += coreBox(TOPIC_BY_KEY[tk[0]].name+' 핵심만', g, tk[0]); n++; } });
+    return html;
+  }
+  function score(it, words){
+    var n = (it.name||'').toLowerCase(), t = (it.title||'').toLowerCase(), b = (it.summary||'').toLowerCase(), s = 0;
+    words.forEach(function(w){ if (n.indexOf(w)>=0) s+=5; if (t.indexOf(w)>=0) s+=3; if (b.indexOf(w)>=0) s+=1; });
+    s += 2 - TRUST_RANK[it.trust];
+    if (it.region==='둔산') s += 1.5;
+    if ((it.grades||[]).indexOf(CHILD)>=0) s += 1;
+    return s;
+  }
+  function firstBit(txt){   // 요약의 앞 두 문장쯤
+    txt = String(txt||''); if (txt.length<=150) return txt;
+    var m = txt.match(/^[\s\S]{50,170}?\.(?=\s)/);
+    return m ? m[0] : txt.slice(0,150)+'…';
+  }
+  function digest(items){
+    if (items.length<2) return '';
+    var hi = items.filter(function(x){ return x.trust==='높음'; }).length,
+        lo = items.filter(function(x){ return x.trust==='확인 필요'; }).length,
+        ds = items.filter(function(x){ return x.region==='둔산'; }).length;
+    var dated = items.filter(function(x){ var d=dday(x); return d!==null && d>=0; }).sort(function(a,b){ return dday(a)-dday(b); });
+    var top = items.slice(0,5);
+    var html = '<div class="dg"><h4>찾은 자료 정리</h4><p class="sum">모두 <b>'+items.length+'건</b>'
+      + (hi?', 공식 자료 '+hi+'건':'') + (lo?', 확인 필요 '+lo+'건':'') + (ds?', 둔산 '+ds+'건':'')
+      + (dated.length?'. 가장 가까운 날짜는 <b>'+esc(dated[0].name||dated[0].title)+' '+ddText(dday(dated[0]))+'</b>':'')
+      + '. 아래 '+top.length+'건을 먼저 읽으면 돼요.</p>';
+    top.forEach(function(it){ var d = dday(it);
+      html += '<button data-jump="'+esc(it.id)+'"><span class="n">'+(d!==null&&d>=0?'<i>'+ddText(d)+'</i>':'')+esc(it.name||it.title)+'</span>'
+        + '<span class="s">'+esc(firstBit(it.summary))+'</span>'
+        + '<span class="w">'+esc(it.region)+(it.timing?' · '+esc(it.timing):'')+(it.trust==='확인 필요'?' · <b class="lo-txt">확인 필요</b>':'')+'</span></button>';
+    });
+    return html + '</div>';
+  }
+
   // ── 주제 / 검색 / 찜 ──
   function results(){
     var isSearch = !!S.q, topic = S.topic && TOPIC_BY_KEY[S.topic];
@@ -426,6 +507,7 @@
     });
     if (S.sort==='마감순') items.sort(function(a,b){ var x=dday(a),y=dday(b); x=(x===null||x<0)?9999:x; y=(y===null||y<0)?9999:y; return x-y || byDefault(a,b); });
     else if (S.sort==='신뢰도순') items.sort(function(a,b){ return TRUST_RANK[a.trust]-TRUST_RANK[b.trust] || byDefault(a,b); });
+    else if (isSearch) items.sort(function(a,b){ return score(b,words)-score(a,words) || byDefault(a,b); });   // 검색은 잘 맞는 것부터
     else items.sort(byDefault);
 
     var title = isSearch ? '“'+S.q+'” 찾은 결과' : S.view==='fav' ? '우리 집' : topic.name;
@@ -438,8 +520,11 @@
         + (g.watch?'<p class="watch">조심할 점: '+esc(g.watch)+'</p>':'')+'</div>';
     }
 
+    var dg = '';
+    if (isSearch && S.view!=='fav'){ dg = briefs(S.q) + (S.sort==='기본' ? digest(items) : ''); html += dg; }
+
     var active = Object.keys(S.f).filter(function(k){ return S.f[k]; });
-    html += '<div class="bar"><h5>'+(g?'근거 자료 ':'')+'<small>'+items.length+'건</small></h5>'
+    html += '<div class="bar"><h5>'+(g||dg?'근거 자료 ':'')+'<small>'+items.length+'건</small></h5>'
       + active.map(function(k){ return '<button class="pill on x" data-clear="'+k+'">'+esc(S.f[k])+'</button>'; }).join('')
       + '<button class="pill'+(S.panel?' on':'')+'" data-panel>골라 보기</button>'
       + '<select class="pill" id="sort" aria-label="정렬">'
@@ -528,6 +613,10 @@
       try { var o = JSON.parse(txt); Object.keys(o).forEach(function(k){ if (ST_LABEL[o[k]]) st[k]=o[k]; }); saveSt(); render(); }
       catch(err){ window.alert('글자를 읽지 못했어요. 내보내기에서 받은 글자를 처음부터 끝까지 붙여넣었는지 확인하세요.'); }
       return; }
+    if ((el = e.target.closest('[data-jump]'))){   // 정리에서 누른 자료를 아래 목록에서 펼쳐 보여줌
+      var jid = el.dataset.jump.replace(/"/g,''), jb = out.querySelector('details.it[data-id="'+jid+'"]');
+      if (!jb){ S.limit = 9999; pendingOpen = jid; render(); return; }
+      jb.open = true; jb.scrollIntoView({block:'center', behavior:'smooth'}); return; }
     if ((el = e.target.closest('[data-topic]'))){ pendingOpen = el.dataset.open||null; go('#/t/'+el.dataset.topic); return; }
     if (e.target.closest('[data-home]')){ S.q=''; $('q').value=''; go('#/'); return; }
     if (e.target.closest('[data-panel]')){ S.panel=!S.panel; render(); return; }
